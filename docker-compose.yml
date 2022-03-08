@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  database_ignite:
+  database:
     image: postgres
     container_name: database_ignite
     restart: always
@@ -14,16 +14,22 @@ services:
     volumes:
       - pgdata:/data/postgres
     # network_mode: host
+    
   app:
     # build . will create the image such as a previous command typed.
     build: .
     container_name: rentx
     ports:
       - 3333:3333
+      - 9229:9229 #Você pode inserir essa porta tbm pra poder usar o debug
     volumes:
       - .:/user/app # will send everything to the workdir created previously
     # network_mode: host
-
+    links:
+      - database
+    depends_on:
+      - database
+      
 volumes:
   pgdata:
     driver: local
